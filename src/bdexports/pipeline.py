@@ -31,7 +31,7 @@ def _parse_filename(filename: str) -> tuple[int, pd.Timestamp] | None:
 
     if match_range:
         end_month = match_range.group(1).title()
-        start_year = int(match_range.group(3))
+        start_year = int(match_range.group(2))
     elif match_single_range:
         end_month = match_single_range.group(1).title()
         start_year = int(match_single_range.group(2))
