@@ -1,0 +1,20 @@
+# Virtual environments
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Notebooks and their checkpoints
+*.ipynb_checkpoints/
+
+# Data artifacts
+data/
+output/
+
+# OS noise
+Thumbs.db
+.DS_Store
+
+# VS Code
+.vscode/

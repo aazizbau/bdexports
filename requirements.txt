@@ -1,0 +1,7 @@
+pandas>=2.1
+tqdm>=4.66
+requests>=2.31
+playwright>=1.48
+matplotlib>=3.8
+bar-chart-race>=0.1.0
+openpyxl>=3.1
