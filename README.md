@@ -73,7 +73,8 @@ can copy‑paste the commands below right after a `git clone`.
 
 7. **Visualise the results**  
    `python scripts/bar_race_country.py --country Japan --portrait`  
-   `python scripts/bar_race_product.py --hs-code 03`
+   `python scripts/bar_race_product.py --hs-code 03`  
+   `python scripts/hs_countries_years.py --hs 03 --countries Japan Germany Canada France India Malaysia --years 2018 2022`
 
 Each CLI provides `--help` for optional parameters (e.g., number of bars, portrait layout).
 
