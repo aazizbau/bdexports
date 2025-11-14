@@ -34,7 +34,7 @@ def main() -> None:
 
     config = BarRaceProductConfig(
         input_csv=Path(args.input_csv),
-        output_video=output_path,
+        output_video=str(output_path),
         hs_code=args.hs_code,
         num_bars=args.num_bars,
         portrait=args.portrait,

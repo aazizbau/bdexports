@@ -1,3 +1,18 @@
+Metadata-Version: 2.4
+Name: bdexports
+Version: 0.1.0
+Summary: Bangladesh export data toolkit for downloading, cleaning, and visualising EPB Excel releases.
+Author: Abdul Aziz Pervez
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.1
+Requires-Dist: tqdm>=4.66
+Requires-Dist: requests>=2.31
+Requires-Dist: playwright>=1.48
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: bar-chart-race>=0.1.0
+Requires-Dist: openpyxl>=3.1
+
 # Bangladesh Export Data Toolkit
 
 This repository converts the ad-hoc `bd_export_data_bar_race.ipynb` notebook into a
@@ -26,23 +41,17 @@ visualisation) now lives in a dedicated module with small CLI wrappers under
 
 ## Installing dependencies
 
-From a Windows terminal (PowerShell or Command Prompt):
+```
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-1. Clone and enter the repo  
-   `git clone https://github.com/<you>/bdexports.git`  
-   `cd bdexports`
-2. Create/activate a virtual environment  
-   `python -m venv .venv`  
-   `.venv\Scripts\activate`
-3. Install dependencies and Playwright browser  
-   `pip install -r requirements.txt`  
-   `playwright install chromium`
-4. (Optional) Install the package in editable mode if you want `bdexports` imports everywhere  
-   `pip install -e .`
-5. Make FFmpeg available for animations  
-   - Either add `C:\ffmpeg\bin` (or your install path) to `PATH`, or  
-   - Set `FFMPEG_PATH` before running the visualization scripts:  
-     `setx FFMPEG_PATH "C:\ffmpeg\bin\ffmpeg.exe"` (permanent) or `$env:FFMPEG_PATH = "C:\ffmpeg\bin\ffmpeg.exe"` (current session)
+Playwright needs the Chromium browser on first use:
+
+```
+playwright install chromium
+```
 
 ## Example pipeline
 

@@ -126,13 +126,12 @@ def process_and_rename(config: RenameConfig) -> None:
 
     for path in tqdm(files, desc="Renaming product files"):
         try:
-            workbook = pd.ExcelFile(path)
+            with pd.ExcelFile(path) as workbook:
+                sheet = next((name for name in workbook.sheet_names if "2 digit" in name.lower()), None)
         except Exception as exc:
             tqdm.write(f"✖ Failed to read {path.name}: {exc}")
             skipped += 1
             continue
-
-        sheet = next((name for name in workbook.sheet_names if "2 digit" in name.lower()), None)
         if not sheet:
             skipped += 1
             continue

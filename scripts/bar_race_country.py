@@ -35,7 +35,7 @@ def main() -> None:
 
     config = BarRaceCountryConfig(
         input_csv=Path(args.input_csv),
-        output_video=output_path,
+        output_video=str(output_path),
         target_country=args.country,
         num_bars=args.num_bars,
         portrait=args.portrait,

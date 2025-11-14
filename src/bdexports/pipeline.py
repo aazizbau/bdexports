@@ -52,12 +52,11 @@ def _parse_filename(filename: str) -> tuple[int, pd.Timestamp] | None:
 
 def _read_product_sheet(path: Path) -> pd.DataFrame | str:
     try:
-        workbook = pd.ExcelFile(path)
+        with pd.ExcelFile(path) as workbook:
+            if "2 Digit" not in workbook.sheet_names:
+                return "Sheet '2 Digit' not found"
     except Exception as exc:
         return f"Failed to read workbook: {exc}"
-
-    if "2 Digit" not in workbook.sheet_names:
-        return "Sheet '2 Digit' not found"
 
     df = pd.read_excel(path, sheet_name="2 Digit", header=None)
     extracted: list[dict[str, object]] = []

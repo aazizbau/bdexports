@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 import textwrap
 from pathlib import Path
@@ -8,9 +9,25 @@ import bar_chart_race as bcr
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import pandas as pd
+from shutil import which
+import warnings
 
 from ..config import BarRaceCountryConfig, BarRaceProductConfig
 from ..constants import DEFAULT_ANNOTATION, HS_CODE_MAP
+
+
+def _configure_ffmpeg() -> None:
+    path = which("ffmpeg") or os.environ.get("FFMPEG_PATH")
+    if path and Path(path).exists():
+        plt.rcParams["animation.ffmpeg_path"] = path
+    else:  # pragma: no cover - host dependent
+        warnings.warn(
+            "ffmpeg not found. Set the FFMPEG_PATH environment variable to the executable "
+            "or ensure it is on PATH. bar_chart_race will fall back to Pillow."
+        )
+
+
+_configure_ffmpeg()
 
 
 def _format_value(value: float) -> str:
@@ -49,7 +66,7 @@ def _load_dataframe(path: Path) -> pd.DataFrame:
 def create_country_bar_race(config: BarRaceCountryConfig) -> None:
     df = _load_dataframe(config.input_csv)
     df["hs_code"] = df["hs_code"].str.strip().str.zfill(2)
-    config.output_video.parent.mkdir(parents=True, exist_ok=True)
+    Path(config.output_video).parent.mkdir(parents=True, exist_ok=True)
 
     filtered = df[df["country"] == config.target_country].copy()
     if filtered.empty:
@@ -64,9 +81,9 @@ def create_country_bar_race(config: BarRaceCountryConfig) -> None:
         for code in pivoted.columns
     ]
 
-    figsize = (9, 16) if config.portrait else (12, 8)
+    figsize = (11, 16) if config.portrait else (13, 8)
     fig, ax = plt.subplots(figsize=figsize, dpi=144)
-    fig.subplots_adjust(left=0.22 if config.portrait else 0.18, right=0.96, top=0.9, bottom=0.08)
+    fig.subplots_adjust(left=0.28 if config.portrait else 0.22, right=0.93, top=0.9, bottom=0.08)
     ax.set_title(
         f"Top {config.num_bars} Exported Products\nfrom Bangladesh to {config.target_country}",
         fontsize=20 if config.portrait else 16,
@@ -79,11 +96,12 @@ def create_country_bar_race(config: BarRaceCountryConfig) -> None:
 
     bcr.bar_chart_race(
         df=pivoted,
-        filename=config.output_video,
+        filename=str(config.output_video),
         n_bars=config.num_bars,
         sort="desc",
         bar_size=0.9,
         dpi=300,
+        filter_column_colors=True,
         cmap="Dark2",
         fig=fig,
         title="",
@@ -104,7 +122,7 @@ def create_product_bar_race(config: BarRaceProductConfig) -> None:
     df = _load_dataframe(config.input_csv)
     df["hs_code"] = df["hs_code"].str.strip().str.zfill(2)
     product_name = HS_CODE_MAP.get(config.hs_code.zfill(2), f"HS {config.hs_code}")
-    config.output_video.parent.mkdir(parents=True, exist_ok=True)
+    Path(config.output_video).parent.mkdir(parents=True, exist_ok=True)
 
     filtered = df[df["hs_code"] == config.hs_code.zfill(2)].copy()
     if filtered.empty:
@@ -115,9 +133,9 @@ def create_product_bar_race(config: BarRaceProductConfig) -> None:
     pivoted.columns = [re.sub(r"[^A-Za-z0-9\s-]", "", col).strip() for col in pivoted.columns]
     pivoted = pivoted.apply(lambda col: col.cumsum())
 
-    figsize = (12, 16) if config.portrait else (14, 8)
+    figsize = (13, 16) if config.portrait else (15, 8)
     fig, ax = plt.subplots(figsize=figsize, dpi=144)
-    fig.subplots_adjust(left=0.2 if config.portrait else 0.16, right=0.95, top=0.9, bottom=0.08)
+    fig.subplots_adjust(left=0.26 if config.portrait else 0.2, right=0.92, top=0.9, bottom=0.08)
     ax.set_title(
         f"Top {config.num_bars} Importing Countries\nfor {product_name}",
         fontsize=22 if config.portrait else 18,
@@ -129,13 +147,14 @@ def create_product_bar_race(config: BarRaceProductConfig) -> None:
 
     bcr.bar_chart_race(
         df=pivoted,
-        filename=config.output_video,
+        filename=str(config.output_video),
         n_bars=config.num_bars,
         sort="desc",
         bar_size=0.88,
         bar_label_size=12 if config.portrait else 10,
         tick_label_size=12 if config.portrait else 10,
         dpi=300,
+        filter_column_colors=True,
         cmap="tab20",
         fig=fig,
         title="",

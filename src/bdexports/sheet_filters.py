@@ -28,13 +28,17 @@ def move_files_with_sheet(config: SheetFilterConfig) -> None:
 
     for path in tqdm(files, desc=f"Searching for '{config.sheet_name}'"):
         try:
-            workbook = pd.ExcelFile(path)
+            with pd.ExcelFile(path) as workbook:
+                has_sheet = any(
+                    config.sheet_name.lower() == sheet.lower()
+                    for sheet in workbook.sheet_names
+                )
         except Exception as exc:
             tqdm.write(f"✖ Unable to read {path.name}: {exc}")
             skipped += 1
             continue
 
-        if any(config.sheet_name.lower() == sheet.lower() for sheet in workbook.sheet_names):
+        if has_sheet:
             target = destination / path.name
             path.replace(target)
             tqdm.write(f"✔ Moved {path.name}")
