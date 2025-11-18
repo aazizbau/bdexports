@@ -9,3 +9,4 @@ squarify>=0.4
 country-converter>=1.0
 plotly>=6.4
 kaleido>=1.2
+seaborn>=0.13
